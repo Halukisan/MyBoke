@@ -1,0 +1,1 @@
+第一次！第一次遇到一个前端Vue工程时需要先在终端打开这个文档（比如说这个sg-blog-vue）npm install一下，之后就不需要了，然后执行npm run dev

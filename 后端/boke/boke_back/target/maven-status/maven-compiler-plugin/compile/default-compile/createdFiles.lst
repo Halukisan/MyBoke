@@ -1,0 +1,8 @@
+boke\controller\ArticleController.class
+boke\filter\JwtAuthenticationTokenFilter.class
+boke\config\SecurityConfig.class
+boke\controller\CategoryController.class
+boke\controller\TagController.class
+boke\controller\LoginController.class
+boke\BlogAdminApplication.class
+boke\controller\UploadController.class

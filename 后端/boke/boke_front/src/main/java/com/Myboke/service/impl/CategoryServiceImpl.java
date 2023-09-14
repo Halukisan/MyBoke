@@ -2,7 +2,6 @@ package com.Myboke.service.impl;
 
 import com.Myboke.domain.dto.AdCategoryDto;
 import com.Myboke.domain.vo.PageVo;
-import com.Myboke.service.ArticleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -31,12 +30,10 @@ import java.util.List;
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CategoryServiceImpl.class);
-    @Autowired
-    private ArticleService articleService;
+
     @Autowired
     private CategoryMapper categoryMapper;
-    @Autowired
-    private CategoryService categoryService;
+
     @Override
     public ResponseResult getCategoryList() {
         LambdaQueryWrapper<Category>categoryLambdaQueryWrapper = new LambdaQueryWrapper<>();

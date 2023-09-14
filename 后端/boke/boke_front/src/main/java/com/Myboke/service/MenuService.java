@@ -3,6 +3,7 @@ package com.Myboke.service;
 import com.Myboke.domain.ResponseResult;
 import com.Myboke.domain.dto.AdMenuDto;
 import com.Myboke.domain.entity.Menu;
+import com.Myboke.domain.vo.MenuVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -27,5 +28,9 @@ public interface MenuService extends IService<Menu> {
     ResponseResult add(AdMenuDto adMenuDto);
 
     ResponseResult deleteByMenuId(Long id);
+
+    ResponseResult getById_for_Modify(Long id);
+
+    ResponseResult updateMenu(List<MenuVo> menuVos);
 }
 

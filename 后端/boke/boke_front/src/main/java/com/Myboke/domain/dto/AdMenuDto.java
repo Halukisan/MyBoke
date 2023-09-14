@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -19,6 +20,9 @@ public class AdMenuDto {
 
     //菜单名称
     private String menuName;
+    private String component;
+    //创建时间
+    private Date createTime;
     //父菜单ID
     private Long parentId;
     //显示顺序

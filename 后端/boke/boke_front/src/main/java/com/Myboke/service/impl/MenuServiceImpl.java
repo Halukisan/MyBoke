@@ -16,8 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,7 +125,22 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Override
     public ResponseResult add(AdMenuDto adMenuDto) {
+        Menu parentMenu = menuMapper.selectById(adMenuDto.getParentId());
+
+        // 创建一个 LocalDateTime 对象
+        LocalDateTime localDateTime = LocalDateTime.now();
+
+        // 将 LocalDateTime 转换为 Date
+        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        if (parentMenu!=null){
+         adMenuDto.setComponent(parentMenu.getComponent()+parentMenu.getPath());
+        }else{
+            adMenuDto.setComponent(adMenuDto.getPath());
+        }
+        adMenuDto.setCreateTime(date);
         Menu menu = BeanCopyUtils.copyBean(adMenuDto,Menu.class);
+
         save(menu);
         return ResponseResult.okResult();
     }
@@ -130,6 +152,60 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             return null;
         }
         menuMapper.deleteById(id);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult getById_for_Modify(Long id) {
+        if (id == null){
+            LOG.error("modify needs id is null");
+            return null;
+        }
+        /*能够修改菜单，但是修改的时候不能把父菜单设置为当前菜单，如果设置了需要给出相应的提示。并且修改失败。*/
+
+        LambdaQueryWrapper<Menu> menuLambdaQueryWrappe = new LambdaQueryWrapper<>();
+        menuLambdaQueryWrappe.eq(Menu::getId,id);
+        List<Menu> menus = list(menuLambdaQueryWrappe);
+        List<MenuVo> menuVos = BeanCopyUtils.copyBeanList(menus,MenuVo.class);
+
+        return ResponseResult.okResult(menuVos);
+    }
+
+    @Override
+    public ResponseResult updateMenu(List<MenuVo> menuVos) {
+        MenuVo menuVo = menuVos.get(0);
+        Menu parentMenu = menuMapper.selectById(menuVo.getParentId());
+        if (menuVo.getMenuName().equals(parentMenu.getMenuName())){
+            //当前菜单的名字和父菜单的名字一样，表示把当前在修改的菜单设置为父菜单了。
+            ResponseResult result = new ResponseResult();
+            result.setMsg("修改菜单"+menuVo.getMenuName()+"失败，上级菜单不能选择自己");
+            result.setCode(500);
+            return result;
+        }
+        Menu menu = new Menu();
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date now = new Date();
+            String strNow = sdf.format(now);
+            Date date = sdf.parse(strNow);
+            menu.setUpdateTime(date);
+        }catch (ParseException e){
+            throw new RuntimeException(e);
+        }
+        menu.setComponent(menuVo.getComponent());
+        menu.setCreateTime(menuVo.getCreateTime());
+        menu.setIcon(menuVo.getIcon());
+        menu.setId(menuVo.getId());
+        menu.setIsFrame(menuVo.getIsFrame());
+        menu.setMenuName(menuVo.getMenuName());
+        menu.setMenuType(menuVo.getMenuType());
+        menu.setOrderNum(menuVo.getOrderNum());
+        menu.setParentId(menuVo.getParentId());
+        menu.setPath(menuVo.getPath());
+        menu.setStatus(menuVo.getStatus());
+        menu.setVisible(menuVo.getVisible());
+        menuMapper.updateById(menu);
+
         return ResponseResult.okResult();
     }
 

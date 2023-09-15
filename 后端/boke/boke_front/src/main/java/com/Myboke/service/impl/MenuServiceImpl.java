@@ -168,6 +168,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         List<Menu> menus = list(menuLambdaQueryWrappe);
         List<MenuVo> menuVos = BeanCopyUtils.copyBeanList(menus,MenuVo.class);
 
+        /*
+        Menu menu = menuMapper.selectById(id);
+        updateById(menu);
+         */
         return ResponseResult.okResult(menuVos);
     }
 

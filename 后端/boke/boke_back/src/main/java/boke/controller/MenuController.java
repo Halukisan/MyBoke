@@ -2,7 +2,6 @@ package boke.controller;
 
 import com.Myboke.domain.ResponseResult;
 import com.Myboke.domain.dto.AdMenuDto;
-import com.Myboke.domain.entity.Menu;
 import com.Myboke.domain.vo.MenuVo;
 import com.Myboke.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
